@@ -1,0 +1,102 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://AutoLoad/UdpClient.gd" type="Script" id=2]
+[ext_resource path="res://AutoLoad/UdpServer.gd" type="Script" id=3]
+
+[node name="Main" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+_peers = NodePath("VBoxContainer/GridContainer/MarginContainer2/OptionButton")
+_textbox = NodePath("VBoxContainer/GridContainer/MarginContainer/LineEdit")
+_sendbutton = NodePath("VBoxContainer/GridContainer/Button")
+_output = NodePath("VBoxContainer/MarginContainer2/TextEdit")
+_udpclient = NodePath("UdpClient")
+_udpserver = NodePath("UdpServer")
+_server = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+alignment = 1
+
+[node name="GridContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/GridContainer"]
+margin_right = 486.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/GridContainer/MarginContainer2"]
+margin_right = 486.0
+margin_bottom = 24.0
+disabled = true
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/GridContainer"]
+margin_left = 490.0
+margin_right = 977.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/GridContainer/MarginContainer"]
+margin_right = 487.0
+margin_bottom = 24.0
+text = "DISCONNECTED"
+max_length = 100
+editable = false
+
+[node name="Button" type="Button" parent="VBoxContainer/GridContainer"]
+margin_left = 981.0
+margin_right = 1024.0
+margin_bottom = 24.0
+disabled = true
+text = "Send"
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextEdit" type="TextEdit" parent="VBoxContainer/MarginContainer2"]
+margin_right = 1024.0
+margin_bottom = 572.0
+readonly = true
+smooth_scrolling = true
+
+[node name="UdpClient" type="Node" parent="."]
+script = ExtResource( 2 )
+_port = 10000
+_auto_start = false
+_process_interval = 5.0
+_connection_timeout = 20.0
+_heartbeat_time = 5.0
+_init_message = "Hello from me"
+
+[node name="UdpServer" type="Node" parent="."]
+script = ExtResource( 3 )
+_port = 10000
+_confirm_flag = 126
+_auto_start = false
+_send_interval = 1.0
+_disconnect_interval = 10.0
+_max_connections = 4
+
+[connection signal="text_entered" from="VBoxContainer/GridContainer/MarginContainer/LineEdit" to="." method="_on_LineEdit_text_entered"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/Button" to="." method="_on_Button_pressed"]
+[connection signal="connected" from="UdpClient" to="." method="_on_UdpClient_connected"]
+[connection signal="disconnected" from="UdpClient" to="." method="_on_UdpClient_disconnected"]
+[connection signal="packet_received" from="UdpClient" to="." method="_on_Udp_packet_received"]
+[connection signal="packet_received" from="UdpServer" to="." method="_on_Udp_packet_received"]
+[connection signal="peer_connected" from="UdpServer" to="." method="_on_UdpServer_peer_change"]
+[connection signal="peer_disconnected" from="UdpServer" to="." method="_on_UdpServer_peer_change"]
+[connection signal="peer_dropped" from="UdpServer" to="." method="_on_UdpServer_peer_change"]
